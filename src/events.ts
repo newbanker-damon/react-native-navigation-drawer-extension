@@ -3,7 +3,7 @@
  * @description Event dispatcher for comunication between components.
  */
 
-interface EvnetsInterface {
+interface EventsInterface {
   [key: string]: any;
 }
 
@@ -11,7 +11,7 @@ interface EvnetsInterface {
  * @description events
  * @private
  */
-var _events: EvnetsInterface = {};
+var _events: EventsInterface = {};
 
 /**
  * @description add listener

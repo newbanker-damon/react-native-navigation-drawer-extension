@@ -73,6 +73,8 @@ declare interface RNNDrawerOptions {
   disableDragging?: boolean;
 
   disableSwiping?: boolean;
+
+  disablePanGesture?: boolean;
 }
 
 export enum DirectionType {
@@ -83,8 +85,8 @@ export enum DirectionType {
 }
 
 interface Point {
-    moveX: number;
-    moveY: number;
+  moveX: number;
+  moveY: number;
 }
 
 interface IState {
@@ -109,6 +111,8 @@ interface IProps {
   animateDrawerExpanding?: boolean;
   disableDragging?: boolean;
   disableSwiping?: boolean;
+
+  disablePanGesture?: boolean;
   style: any;
 }
 
@@ -162,7 +166,7 @@ class RNNDrawer {
       private unsubscribeSwipeMove!: () => void;
       private unsubscribeSwipeEnd!: () => void;
       private unsubscribeDismissDrawer!: () => void;
-      private panningStartedPoint: Point = { moveX: 0 , moveY: 0 };
+      private panningStartedPoint: Point = { moveX: 0, moveY: 0 };
       private startedFromSideMenu: boolean = false;
 
       static defaultProps = {
@@ -175,7 +179,7 @@ class RNNDrawer {
         drawerScreenHeight: '100%',
         animateDrawerExpanding: true,
         disableDragging: false,
-        disableSwiping: false
+        disableSwiping: false,
       };
 
       /**
@@ -206,10 +210,12 @@ class RNNDrawer {
           ) => {
             const { dx, dy } = _gestureState;
 
-            if (this.props.direction === DirectionType.left || this.props.direction === DirectionType.right)
+            if (
+              this.props.direction === DirectionType.left ||
+              this.props.direction === DirectionType.right
+            )
               return Math.abs(dx) > 5;
-            else
-              return Math.abs(dy) > 5;
+            else return Math.abs(dy) > 5;
           },
           onMoveShouldSetPanResponderCapture: (
             _evt: GestureResponderEvent,
@@ -221,7 +227,7 @@ class RNNDrawer {
           ) => {
             const { moveX, moveY } = _gestureState;
 
-            dispatch('SWIPE_START', {moveX, moveY});
+            dispatch('SWIPE_START', { moveX, moveY });
           },
           onPanResponderRelease: (
             _evt: GestureResponderEvent,
@@ -299,7 +305,9 @@ class RNNDrawer {
 
         /** Component State */
         this.state = {
-          sideMenuOpenValue: new Animated.Value(this.initialValues[props.direction]),
+          sideMenuOpenValue: new Animated.Value(
+            this.initialValues[props.direction],
+          ),
           sideMenuOverlayOpacity: new Animated.Value(0),
           sideMenuSwipingStarted: false,
           sideMenuIsDismissing: false,
@@ -335,8 +343,11 @@ class RNNDrawer {
         /** Props */
         const { direction, fadeOpacity, animateDrawerExpanding } = this.props;
 
-        if (typeof animateDrawerExpanding !== 'undefined' && !animateDrawerExpanding)
-            this.startedFromSideMenu = true;
+        if (
+          typeof animateDrawerExpanding !== 'undefined' &&
+          !animateDrawerExpanding
+        )
+          this.startedFromSideMenu = true;
 
         // Animate side menu open
         this.animatedDrawer = Animated.timing(this.state.sideMenuOpenValue, {
@@ -365,7 +376,10 @@ class RNNDrawer {
         this.registerListeners();
 
         // If there has been no Swiping, and this component appears, then just start the open animations
-        if (!this.state.sideMenuSwipingStarted && this.props.animateDrawerExpanding) {
+        if (
+          !this.state.sideMenuSwipingStarted &&
+          this.props.animateDrawerExpanding
+        ) {
           this.animatedDrawer.start();
           this.animatedOpacity.start();
         }
@@ -382,7 +396,7 @@ class RNNDrawer {
         dispatch('DRAWER_CLOSED');
       }
 
-      onOrientationChange = ({window}: any) => {
+      onOrientationChange = ({ window }: any) => {
         const screenHeight = window.height;
 
         this.setState({ screenHeight });
@@ -394,7 +408,7 @@ class RNNDrawer {
 
           this.state.sideMenuOpenValue.setValue(alignedMovementValue);
         }
-      }
+      };
 
       /**
        * Registers all the listenrs for this component
@@ -422,19 +436,25 @@ class RNNDrawer {
           ({ value, direction: swipeDirection }: SwipeMoveInterface) => {
             // Cover special case when we are swiping from the edge of the screen
             if (this.startedFromSideMenu) {
-              if (direction === "left" && value.moveX < this.drawerWidth) {
-                this.state.sideMenuOpenValue.setValue(value.moveX - this.drawerWidth);
+              if (direction === 'left' && value.moveX < this.drawerWidth) {
+                this.state.sideMenuOpenValue.setValue(
+                  value.moveX - this.drawerWidth,
+                );
                 const normalizedOpacity = Math.min(
-                    (value.moveX / this.drawerWidth) * fadeOpacity,
-                    fadeOpacity,
+                  (value.moveX / this.drawerWidth) * fadeOpacity,
+                  fadeOpacity,
                 );
                 this.state.sideMenuOverlayOpacity.setValue(normalizedOpacity);
               }
-              if (direction === "right" && (this.screenWidth - value.moveX) < this.drawerWidth) {
+              if (
+                direction === 'right' &&
+                this.screenWidth - value.moveX < this.drawerWidth
+              ) {
                 this.state.sideMenuOpenValue.setValue(value.moveX);
                 const normalizedOpacity = Math.min(
-                    ((this.screenWidth - value.moveX) / this.drawerWidth) * fadeOpacity,
+                  ((this.screenWidth - value.moveX) / this.drawerWidth) *
                     fadeOpacity,
+                  fadeOpacity,
                 );
                 this.state.sideMenuOverlayOpacity.setValue(normalizedOpacity);
               }
@@ -442,8 +462,7 @@ class RNNDrawer {
               return;
             }
 
-            if (this.props.disableDragging)
-              return;
+            if (this.props.disableDragging) return;
             // Calculates the translateX / translateY value
             let alignedMovementValue = 0;
             // To swap the direction if needed
@@ -452,31 +471,40 @@ class RNNDrawer {
             let drawerDimension = this.drawerWidth;
 
             if (swipeDirection === 'left') {
-              alignedMovementValue = value.moveX - this.panningStartedPoint.moveX;
+              alignedMovementValue =
+                value.moveX - this.panningStartedPoint.moveX;
             } else if (swipeDirection === 'right') {
-              alignedMovementValue = this.panningStartedPoint.moveX - value.moveX;
+              alignedMovementValue =
+                this.panningStartedPoint.moveX - value.moveX;
               directionModifier = -1;
             } else if (swipeDirection === 'bottom') {
-              alignedMovementValue = this.panningStartedPoint.moveY - value.moveY;
+              alignedMovementValue =
+                this.panningStartedPoint.moveY - value.moveY;
               directionModifier = -1;
               drawerDimension = this.drawerHeight;
             } else if (swipeDirection === 'top') {
-              alignedMovementValue = value.moveY - this.panningStartedPoint.moveY;
+              alignedMovementValue =
+                value.moveY - this.panningStartedPoint.moveY;
               drawerDimension = this.drawerHeight;
             }
 
             // Calculates the percentage 0 - 1 of which the drawer is open
-            const openedPercentage = Math.abs(drawerDimension + alignedMovementValue) / drawerDimension;
+            const openedPercentage =
+              Math.abs(drawerDimension + alignedMovementValue) /
+              drawerDimension;
             // Calculates the opacity to set of the screen based on the percentage the drawer is open
             const normalizedOpacity = Math.min(
-                openedPercentage * fadeOpacity,
-                fadeOpacity,
+              openedPercentage * fadeOpacity,
+              fadeOpacity,
             );
 
             // Does not allow the drawer to go further than the maximum width / height
             if (0 > alignedMovementValue) {
               // Sets the animation values, we use this so we can resume animation from any point
-              this.state.sideMenuOpenValue.setValue(this.drawerOpenedValues[direction] + alignedMovementValue * directionModifier);
+              this.state.sideMenuOpenValue.setValue(
+                this.drawerOpenedValues[direction] +
+                  alignedMovementValue * directionModifier,
+              );
               this.state.sideMenuOverlayOpacity.setValue(normalizedOpacity);
             }
           },
@@ -486,14 +514,13 @@ class RNNDrawer {
         this.unsubscribeSwipeEnd = listen(
           'SWIPE_END',
           (swipeDirection: string) => {
-            if (this.props.disableSwiping && !this.startedFromSideMenu)
-              return;
+            if (this.props.disableSwiping && !this.startedFromSideMenu) return;
 
             const reverseDirection: DrawerReverseDirectionInterface = {
               right: 'left',
               left: 'right',
               top: 'bottom',
-              bottom: 'top'
+              bottom: 'top',
             };
             // In case the drawer started by dragging the edge of the screen reset the flag
             this.startedFromSideMenu = false;
@@ -544,7 +571,7 @@ class RNNDrawer {
         /** Styles */
         const { sideMenuOverlayStyle, sideMenuContainerStyle } = styles;
         /** Props */
-        const { direction, style } = this.props;
+        const { direction, style, disablePanGesture } = this.props;
         /** State */
         const { sideMenuOpenValue, sideMenuOverlayOpacity } = this.state;
         /** Variables */
@@ -556,7 +583,7 @@ class RNNDrawer {
         return (
           <View
             style={sideMenuContainerStyle}
-            {...this.panResponder.panHandlers}
+            {...(disablePanGesture ? {} : this.panResponder.panHandlers)}
           >
             <TouchableWithoutFeedback onPress={this.touchedOutside}>
               <Animated.View
@@ -573,9 +600,7 @@ class RNNDrawer {
                 {
                   height: this.state.screenHeight,
                   width: this.drawerWidth,
-                  transform:[
-                    animatedValue
-                  ]
+                  transform: [animatedValue],
                 },
               ]}
             >
@@ -680,4 +705,3 @@ const styles = StyleSheet.create<StylesInterface>({
     backgroundColor: '#000',
   },
 });
-

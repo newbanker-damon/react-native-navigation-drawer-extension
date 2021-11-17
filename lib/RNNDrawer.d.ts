@@ -42,6 +42,9 @@ declare interface RNNDrawerOptions {
      * Height of drawer in relation to the screen (0 to 1)
      */
     drawerScreenHeight?: number;
+    disableDragging?: boolean;
+    disableSwiping?: boolean;
+    disablePanGesture?: boolean;
 }
 export declare enum DirectionType {
     left = "left",
