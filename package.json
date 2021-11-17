@@ -1,6 +1,6 @@
 {
-  "name": "react-native-navigation-drawer-extension",
-  "version": "4.0.1",
+  "name": "@newbanker/react-native-navigation-drawer-extension",
+  "version": "4.2.1",
   "description": "Drawer API built on top of wix react-native-navigation for iOS and Android.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lukebrandonfarrell/wix-react-native-navigation-drawer.git"
+    "url": "git+https://github.com/newbanker-damon/react-native-navigation-drawer.git"
   },
   "keywords": [
     "wix",
@@ -33,12 +33,12 @@
   "peerDependencies": {
     "react-native-navigation": ">= 3.x"
   },
-  "author": "Luke Brandon Farrell",
+  "author": "Damon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lukebrandonfarrell/wix-react-native-navigation-drawer/issues"
+    "url": "https://github.com/newbanker-damon/react-native-navigation-drawer/issues"
   },
-  "homepage": "https://github.com/lukebrandonfarrell/wix-react-native-navigation-drawer#readme",
+  "homepage": "https://github.com/newbanker-damon/react-native-navigation-drawer#readme",
   "dependencies": {},
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
