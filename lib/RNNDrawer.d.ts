@@ -3,7 +3,7 @@
  * @description An animated drawer component for react-native-navigation.
  */
 import * as React from 'react';
-import { Layout } from 'react-native-navigation';
+import { Layout } from '@newbanker/react-native-navigation';
 declare interface RNNDrawerOptions {
     /**
      * Id of parent component of the drawer.

@@ -18,7 +18,7 @@ import {
   PanResponderGestureState,
   GestureResponderEvent,
 } from 'react-native';
-import { Navigation, Layout } from 'react-native-navigation';
+import { Navigation, Layout } from '@newbanker/react-native-navigation';
 /* Utils - Project Utilities */
 import { listen, dispatch } from './events';
 

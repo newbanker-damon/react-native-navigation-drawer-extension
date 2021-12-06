@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import { Options } from 'react-native-navigation';
+import { Options } from '@newbanker/react-native-navigation';
 interface IProps {
     swipeSensitivity?: number;
     sideMargin?: number;
