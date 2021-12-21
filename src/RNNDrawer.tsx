@@ -17,6 +17,7 @@ import {
   PanResponder,
   PanResponderGestureState,
   GestureResponderEvent,
+  Keyboard,
 } from 'react-native';
 import { Navigation, Layout } from '@newbanker/react-native-navigation';
 /* Utils - Project Utilities */
@@ -662,6 +663,7 @@ class RNNDrawer {
    * @param layout
    */
   static showDrawer(layout: Layout<RNNDrawerOptions>) {
+    Keyboard.dismiss();
     // By default for this library, we make the 'componentBackgroundColor' transparent
     const componentBackgroundColor =
       layout?.component?.options?.layout?.componentBackgroundColor ??
