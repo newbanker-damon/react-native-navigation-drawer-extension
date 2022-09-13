@@ -80,6 +80,8 @@ declare interface RNNDrawerOptions {
   disableDragging?: boolean;
 
   disableSwiping?: boolean;
+
+  disablePanGesture?: boolean;
 }
 
 export enum DirectionType {
