@@ -117,6 +117,7 @@ interface IProps {
   animateDrawerExpanding?: boolean;
   disableDragging?: boolean;
   disableSwiping?: boolean;
+  disablePanGesture?: boolean;
   style: any;
 }
 
@@ -172,7 +173,7 @@ class RNNDrawer {
       private unsubscribeDismissDrawer!: () => void;
       private panningStartedPoint: Point = { moveX: 0, moveY: 0 };
       private startedFromSideMenu: boolean = false;
-      private orientationChangeListener: EmitterSubscription;
+      //private orientationChangeListener: null | () => void;
 
       static defaultProps = {
         animationOpenTime: 300,
@@ -427,7 +428,7 @@ class RNNDrawer {
         const { direction, fadeOpacity } = this.props;
 
         // Adapt the drawer's size on orientation change
-        this.orientationChangeListener = Dimensions.addEventListener('change', this.onOrientationChange);
+        Dimensions.addEventListener('change', this.onOrientationChange);
 
         // Executes when the side of the screen interaction starts
         this.unsubscribeSwipeStart = listen('SWIPE_START', (value: Point) => {
@@ -564,7 +565,8 @@ class RNNDrawer {
        * Removes all the listenrs from this component
        */
       removeListeners() {
-        if (this.orientationChangeListener) this.orientationChangeListener.remove();
+        // if (this.orientationChangeListener)
+        //   this.orientationChangeListener.remove();
         if (this.unsubscribeSwipeStart) this.unsubscribeSwipeStart();
         if (this.unsubscribeSwipeMove) this.unsubscribeSwipeMove();
         if (this.unsubscribeSwipeEnd) this.unsubscribeSwipeEnd();
@@ -580,7 +582,7 @@ class RNNDrawer {
         /** Styles */
         const { sideMenuOverlayStyle, sideMenuContainerStyle } = styles;
         /** Props */
-        const { direction, style } = this.props;
+        const { direction, style, disablePanGesture } = this.props;
         /** State */
         const { sideMenuOpenValue, sideMenuOverlayOpacity } = this.state;
         /** Variables */
@@ -592,7 +594,7 @@ class RNNDrawer {
         return (
           <View
             style={sideMenuContainerStyle}
-            {...this.panResponder.panHandlers}
+            {...(disablePanGesture ? {} : this.panResponder.panHandlers)}
           >
             <TouchableWithoutFeedback onPress={this.touchedOutside}>
               <Animated.View
